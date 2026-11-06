@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#012D6E">
+  <title>МедиаКоми — угадай цену квартиры</title>
+  <meta name="description" content="Игра: угадай стоимость квартиры в Республике Коми по фотографиям. 10 раундов, баллы за точность.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== Стартовый экран ===== -->
+  <section id="screen-start" class="screen screen--start">
+    <header class="hero">
+      <div class="hero__badge">Игра от редакции</div>
+      <h1 class="hero__title">Медиа<span>Коми</span></h1>
+      <p class="hero__subtitle">Угадай, сколько стоит квартира в Республике Коми</p>
+    </header>
+
+    <div class="rules card">
+      <h2 class="rules__title">Правила</h2>
+      <ol class="rules__list">
+        <li>Смотрите фотографии реальной квартиры из объявления на Авито.</li>
+        <li>Передвигайте бегунок и называйте свою цену — жмите «Оценить».</li>
+        <li>Узнаёте настоящую цену и разницу, набираете баллы.</li>
+        <li>Всего <b>10 раундов</b>. Максимум <b>1000 баллов</b>.</li>
+      </ol>
+      <div class="rules__scale">
+        <div class="rules__scale-row"><span>±10%</span><b>100 баллов</b></div>
+        <div class="rules__scale-row"><span>±20%</span><b>75 баллов</b></div>
+        <div class="rules__scale-row"><span>±35%</span><b>50 баллов</b></div>
+        <div class="rules__scale-row"><span>±50%</span><b>25 баллов</b></div>
+        <div class="rules__scale-row"><span>дальше</span><b>0 баллов</b></div>
+      </div>
+    </div>
+
+    <button id="btn-start" class="btn btn--primary">Начать игру</button>
+    <p class="start-note">Данные: активные объявления Авито, Республика Коми</p>
+  </section>
+
+  <!-- ===== Экран раунда ===== -->
+  <section id="screen-game" class="screen screen--game" hidden>
+    <header class="game-top">
+      <div class="game-top__row">
+        <span class="game-top__logo">МедиаКоми</span>
+        <span class="game-top__score">Баллы: <b id="hud-score">0</b></span>
+      </div>
+      <div class="progress" aria-label="Прогресс игры">
+        <div id="progress-bar" class="progress__bar" style="width:0%"></div>
+      </div>
+      <div class="game-top__row game-top__row--sub">
+        <span>Раунд <b id="round-num">1</b> из 10</span>
+        <span id="round-street" class="game-top__street"></span>
+      </div>
+    </header>
+
+    <!-- Галерея -->
+    <div id="gallery" class="gallery" aria-label="Фотографии квартиры"></div>
+    <div id="gallery-dots" class="gallery-dots" role="tablist"></div>
+
+    <!-- Оценка -->
+    <div id="guess-panel" class="guess">
+      <div class="guess__label">Сколько стоит эта квартира?</div>
+      <div id="guess-value" class="guess__value">500 000 ₽</div>
+      <input id="price-slider" class="guess__slider" type="range"
+             min="100000" max="2000000" step="5000" value="500000"
+             aria-label="Ваша оценка цены">
+      <div class="guess__range">
+        <span>100 тыс.</span><span>1 млн</span><span>2 млн</span>
+      </div>
+      <button id="btn-guess" class="btn btn--primary">Оценить</button>
+    </div>
+
+    <!-- Результат раунда -->
+    <div id="reveal-panel" class="reveal" hidden>
+      <div class="reveal__real">
+        <span class="reveal__label">Реальная цена</span>
+        <span id="reveal-price" class="reveal__price"></span>
+      </div>
+      <div class="reveal__grid">
+        <div class="reveal__cell">
+          <span class="reveal__label">Вы назвали</span>
+          <span id="reveal-guess" class="reveal__num"></span>
+        </div>
+        <div class="reveal__cell">
+          <span class="reveal__label">Разница</span>
+          <span id="reveal-diff" class="reveal__num"></span>
+        </div>
+        <div class="reveal__cell reveal__cell--points">
+          <span class="reveal__label">Баллы</span>
+          <span id="reveal-points" class="reveal__num"></span>
+        </div>
+      </div>
+      <div id="reveal-verdict" class="reveal__verdict"></div>
+      <a id="reveal-link" class="btn btn--ghost" target="_blank" rel="noopener">
+        Смотреть объявление ↗
+      </a>
+      <button id="btn-next" class="btn btn--primary">Следующая квартира</button>
+    </div>
+  </section>
+
+  <!-- ===== Итоговый экран ===== -->
+  <section id="screen-final" class="screen screen--final" hidden>
+    <div class="final card">
+      <p class="final__caption">Ваш результат</p>
+      <div id="final-score" class="final__score">0</div>
+      <div class="final__max">из 1000 баллов</div>
+      <div id="final-emoji" class="final__emoji">🏠</div>
+      <h2 id="final-title" class="final__title"></h2>
+      <p id="final-desc" class="final__desc"></p>
+      <div id="final-stats" class="final__stats"></div>
+    </div>
+    <div class="final-rounds card">
+      <h3 class="final-rounds__title">Все раунды</h3>
+      <div id="final-list" class="final-rounds__list"></div>
+    </div>
+    <button id="btn-again" class="btn btn--primary">Играть ещё раз</button>
+    <p class="start-note">МедиаКоми · данные с Авито · Республика Коми</p>
+  </section>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
